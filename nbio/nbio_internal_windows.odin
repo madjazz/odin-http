@@ -208,7 +208,7 @@ handle_completion :: proc(io: ^IO, completion: ^Completion) {
 		op.read += int(read)
 
 		if err != win.NO_ERROR {
-			op.callback(completion.user_data, op.read, os.Platform_Error(err))
+			op.callback(completion.user_data, op.read, os.Errno(err))
 		} else if op.all && op.read < op.len {
 			op.buf = op.buf[read:]
 
@@ -233,7 +233,7 @@ handle_completion :: proc(io: ^IO, completion: ^Completion) {
 
 		op.written += int(written)
 
-		oerr := os.Platform_Error(err)
+		oerr := os.Errno(err)
 		if oerr != os.ERROR_NONE {
 			op.callback(completion.user_data, op.written, oerr)
 		} else if op.all && op.written < op.len {
@@ -578,44 +578,44 @@ endpoint_to_sockaddr :: proc(ep: net.Endpoint) -> (sockaddr: win.SOCKADDR_STORAG
 	unreachable()
 }
 
-net_err_to_code :: proc(err: net.Network_Error) -> os.Platform_Error {
+net_err_to_code :: proc(err: net.Network_Error) -> os.Errno {
 	switch e in err {
 	case net.Create_Socket_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Socket_Option_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.General_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Platform_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Dial_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Listen_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Accept_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Bind_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.TCP_Send_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.UDP_Send_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.TCP_Recv_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.UDP_Recv_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Shutdown_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Set_Blocking_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Parse_Endpoint_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.Resolve_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case net.DNS_Error:
-		return os.Platform_Error(e)
+		return os.Errno(e)
 	case:
-		return nil
+		return os.ERROR_NONE
 	}
 }
 

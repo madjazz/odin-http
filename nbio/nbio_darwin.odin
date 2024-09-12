@@ -46,10 +46,7 @@ _tick :: proc(io: ^IO) -> os.Errno {
 
 _listen :: proc(socket: net.TCP_Socket, backlog := 1000) -> net.Network_Error {
 	errno := os.listen(os.Socket(socket), backlog)
-	if errno != nil {
-		return net.Listen_Error(errno.(os.Platform_Error))
-	}
-	return nil
+	return net.Listen_Error(errno)
 }
 
 _accept :: proc(io: ^IO, socket: net.TCP_Socket, user: rawptr, callback: On_Accept) -> ^Completion {
